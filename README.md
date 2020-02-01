@@ -9,9 +9,9 @@ note:
 
 _C.so : detectron2(name replaced with mydl) C compiled module
 
-git clone https://github.com/facebookresearch/detectron2
+git clone https://github.com/sailfish009/mydl_C
 
-cd detectron2
+cd mydl_C
 
 python3 setup.py build
 
