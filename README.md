@@ -1,5 +1,5 @@
 # mydl
-my custom "[maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark)" as [pytorch-lightning](https://github.com/PyTorchLightning/pytorch-lightning) 
+my custom "[detectron2](https://github.com/facebookresearch/detectron2)" as [pytorch-lightning](https://github.com/PyTorchLightning/pytorch-lightning) 
 
 released under MIT license
 
@@ -7,11 +7,11 @@ thanks for hint, xuan
 
 note:
 
-_C.so : maskrcnn-benchmark(name replaced with mydl) C compiled module
+_C.so : detectron2(name replaced with mydl) C compiled module
 
-git clone https://github.com/sailfish009/maskrcnn-benchmark
+git clone https://github.com/facebookresearch/detectron2
 
-cd maskrcnn-benchmark
+cd detectron2
 
 python3 setup.py build
 
