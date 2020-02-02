@@ -13,6 +13,6 @@ git clone https://github.com/sailfish009/mydl_C
 
 cd mydl_C
 
-python3 setup.py build
+CC=gcc-8 CXX=g++-8 python3 setup.py build
 
 cp build/lib.linux-x86_64-3.7/mydl/_C.cpython-xxm-x86_64-linux-gnu.so ../mydl/_C.so
