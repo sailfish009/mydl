@@ -73,7 +73,7 @@ def load_protein_instances(dirname: str, split: str):
     return dicts
 
 
-def register_protein_instances(name, dirname, split, year):
+def register_human_protein(name, dirname, split, year):
     DatasetCatalog.register(name, lambda: load_protein_instances(dirname, split))
     MetadataCatalog.get(name).set(
         thing_classes=CLASS_NAMES, dirname=dirname, year=year, split=split

@@ -208,9 +208,22 @@ def register_all_pascal_voc(root="datasets"):
         register_pascal_voc(name, os.path.join(root, dirname), split, year)
         MetadataCatalog.get(name).evaluator_type = "pascal_voc"
 
+# ==== Predefined splits for HUMAN PROTEIN ===========
+def register_all_human_protein(root="datasets"):
+    SPLITS = [
+        ("protein_train", "train", "train"),
+        ("protein_val", "val", "val"),
+    ]
+    for name, dirname, split in SPLITS:
+        year = 2007 if "2007" in name else 2012
+        register_pascal_voc(name, os.path.join(root, dirname), split, year)
+        MetadataCatalog.get(name).evaluator_type = "pascal_voc"
+
+
 
 # Register them all under "./datasets"
-register_all_coco()
-register_all_lvis()
-register_all_cityscapes()
-register_all_pascal_voc()
+register_all_human_protein()
+# register_all_coco()
+# register_all_lvis()
+# register_all_cityscapes()
+# register_all_pascal_voc()
