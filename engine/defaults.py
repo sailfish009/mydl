@@ -42,18 +42,23 @@ from mydl.utils.logger import setup_logger
 from . import hooks
 from .train_loop import SimpleTrainer
 
+import pathlib
+
 __all__ = ["default_argument_parser", "default_setup", "DefaultPredictor", "DefaultTrainer"]
 
 
-def default_argument_parser():
+def default_argument_parser(default_config_path="arg/configs/default/human_protein.yaml"):
     """
     Create a parser with some common arguments used by mydl users.
+
+    default_config_path="arg/configs/default/human_protein.yaml"
 
     Returns:
         argparse.ArgumentParser:
     """
+    cwd = pathlib.Path(__file__).parent.absolute()
     parser = argparse.ArgumentParser(description="mydl Training")
-    parser.add_argument("--config-file", default="", metavar="FILE", help="path to config file")
+    parser.add_argument("--config-file", default=str(cwd) + "/../" + default_config_path, metavar="FILE", help="path to config file")
     parser.add_argument(
         "--resume",
         action="store_true",
