@@ -26,13 +26,13 @@ CLASS_NAMES = [
 
 def load_protein_instances(dirname: str, split: str):
     """
-    Load Pascal VOC detection annotations to mydl format.
+    Load protein detection annotations to mydl format.
 
     Args:
         dirname: Contain "Annotations", "ImageSets", "JPEGImages"
         split (str): one of "train", "test", "val", "trainval"
     """
-    with PathManager.open(os.path.join(dirname, "ImageSets", "Main", split + ".txt")) as f:
+    with PathManager.open(os.path.join(dirname, split + ".csv")) as f:
         fileids = np.loadtxt(f, dtype=np.str)
 
     dicts = []
@@ -73,8 +73,8 @@ def load_protein_instances(dirname: str, split: str):
     return dicts
 
 
-def register_human_protein(name, dirname, split, year):
+def register_human_protein(name, dirname, split):
     DatasetCatalog.register(name, lambda: load_protein_instances(dirname, split))
     MetadataCatalog.get(name).set(
-        thing_classes=CLASS_NAMES, dirname=dirname, year=year, split=split
+        thing_classes=CLASS_NAMES, dirname=dirname, split=split
     )

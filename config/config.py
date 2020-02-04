@@ -22,8 +22,14 @@ class CfgNode(_CfgNode):
         loaded_cfg = _CfgNode.load_yaml_with_base(cfg_filename, allow_unsafe=allow_unsafe)
         loaded_cfg = type(self)(loaded_cfg)
 
-        # defaults.py needs to import CfgNode
-        from .defaults import _C
+        meta_arch = loaded_cfg['MODEL']['META_ARCHITECTURE']
+
+        if meta_arch == 'ProteinResnet':
+            # protein.py needs to import CfgNode
+            from .defaults import _C
+        else:
+            # defaults.py needs to import CfgNode
+            from .defaults import _C
 
         latest_ver = _C.VERSION
         assert (

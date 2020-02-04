@@ -21,6 +21,7 @@ To add new dataset, refer to the tutorial "docs/DATASETS.md".
 import os
 
 from mydl.data import MetadataCatalog, DatasetCatalog
+from .human_protein import register_human_protein
 from .register_coco import register_coco_instances, register_coco_panoptic_separated
 from .lvis import register_lvis_instances, get_lvis_instances_meta
 from .cityscapes import load_cityscapes_instances, load_cityscapes_semantic
@@ -211,13 +212,14 @@ def register_all_pascal_voc(root="datasets"):
 # ==== Predefined splits for HUMAN PROTEIN ===========
 def register_all_human_protein(root="datasets"):
     SPLITS = [
-        ("protein_train", "train", "train"),
-        ("protein_val", "val", "val"),
+        ("protein_trainval", "train", "train"),
     ]
     for name, dirname, split in SPLITS:
-        year = 2007 if "2007" in name else 2012
-        register_pascal_voc(name, os.path.join(root, dirname), split, year)
+        # register_human_protein(name, os.path.join(root, dirname), split)
+        register_human_protein(name, os.path.join(root, dirname), split)
         MetadataCatalog.get(name).evaluator_type = "pascal_voc"
+        # year = 2007 if "2007" in name else 2012
+        # register_human_protein(name, os.path.join(root, dirname), split, year)
 
 
 

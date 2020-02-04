@@ -119,6 +119,8 @@ _C.DATALOADER.REPEAT_THRESHOLD = 0.0
 # if True, the dataloader will filter out images that have no associated
 # annotations at train time.
 _C.DATALOADER.FILTER_EMPTY_ANNOTATIONS = True
+# Type 0: simple, 1: complex
+_C.DATALOADER.TYPE = 0
 
 # ---------------------------------------------------------------------------- #
 # Backbone options
