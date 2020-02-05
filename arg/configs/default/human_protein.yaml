@@ -1,12 +1,12 @@
 INPUT:
-  MIN_SIZE_TRAIN: 512
-  MAX_SIZE_TRAIN: 512
+  MIN_SIZE_TRAIN: (512,)
+  MAX_SIZE_TRAIN: (512,)
 
 DATASETS:
-  TRAIN_ROOT: "kaggle/train"
-  TRAIN_LABEL: "kaggle/train_split_0.csv"
-  VALID_ROOT: "kaggle/train"
-  VALID_LABEL: "kaggle/valid_split_0.csv"
+  TRAIN_ROOT: "datasets/train"
+  TRAIN_LABEL: "datasets/train_split_0.csv"
+  VALID_ROOT: "datasets/train"
+  VALID_LABEL: "datasets/valid_split_0.csv"
 
 MODEL:
   NAME: "resnet18_maxavg"
@@ -15,7 +15,7 @@ MODEL:
   META_ARCHITECTURE: "ProteinResnet"
 
 DATALOADER:
-  SAMPLER_WEIGHTS: "kaggle/train_split_0_weights.pickle"
+  SAMPLER_WEIGHTS: "datasets/train_split_0_weights.pickle"
   SAMPLER: "weighted"
   AUGMENT: "heavy"
 
@@ -36,4 +36,4 @@ TEST:
   TTA: 'on'
 
 OUTPUT_DIR: "dump/res18_cv0"
-VERSION: 1
+VERSION: 2

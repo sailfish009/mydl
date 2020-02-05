@@ -26,12 +26,15 @@ class CfgNode(_CfgNode):
 
         if meta_arch == 'ProteinResnet':
             # protein.py needs to import CfgNode
-            from .defaults import _C
+            from .protein import _C
         else:
             # defaults.py needs to import CfgNode
             from .defaults import _C
 
         latest_ver = _C.VERSION
+
+        print('file: {} _C.VERSION: {}'.format(cfg_filename, _C.VERSION))
+
         assert (
             latest_ver == self.VERSION
         ), "CfgNode.merge_from_file is only allowed on a config object of latest version!"
