@@ -18,18 +18,12 @@ class CfgNode(_CfgNode):
     """
 
     # Note that the default value of allow_unsafe is changed to True
-    def merge_from_file(self, cfg_filename: str, allow_unsafe: bool = True) -> None:
+    def merge_from_file2(self, cfg_filename: str, allow_unsafe: bool = True) -> None:
         loaded_cfg = _CfgNode.load_yaml_with_base(cfg_filename, allow_unsafe=allow_unsafe)
         loaded_cfg = type(self)(loaded_cfg)
 
-        meta_arch = loaded_cfg['MODEL']['META_ARCHITECTURE']
-
-        if meta_arch == 'ProteinResnet':
-            # protein.py needs to import CfgNode
-            from .protein import _C
-        else:
-            # defaults.py needs to import CfgNode
-            from .defaults import _C
+        # defaults.py needs to import CfgNode
+        from .defaults import _C
 
         latest_ver = _C.VERSION
 
@@ -81,14 +75,28 @@ class CfgNode(_CfgNode):
 global_cfg = CfgNode()
 
 
-def get_cfg() -> CfgNode:
+def get_cfg(cfg_filename: str, allow_unsafe=True) -> CfgNode:
     """
     Get a copy of the default config.
 
     Returns:
         a mydl CfgNode instance.
     """
-    from .defaults import _C
+
+    loaded_cfg = _CfgNode.load_yaml_with_base(cfg_filename, allow_unsafe=allow_unsafe)
+
+    # from .defaults import _C
+
+    meta_arch = loaded_cfg['MODEL']['META_ARCHITECTURE']
+
+    if meta_arch == 'ProteinResnet':
+        # protein.py needs to import CfgNode
+        from .protein import _C
+    # elif meta_arch == 'some meta arch' :
+    #   from .xxx import _C
+    else:
+        # defaults.py needs to import CfgNode
+        from .defaults import _C
 
     return _C.clone()
 

@@ -22,7 +22,7 @@ def get_cuda_count():
     return torch.cuda.device.count()
 
 def setup(args):
-    cfg = get_cfg()
+    cfg = get_cfg(args.config_file)
     cfg.merge_from_file(args.config_file)
     cfg.merge_from_list(args.opts)
     cfg.freeze()

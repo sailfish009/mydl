@@ -38,7 +38,7 @@ def load_protein_instances(dirname: str, split: str):
     dicts = []
     for fileid in fileids:
         anno_file = os.path.join(dirname, "Annotations", fileid + ".xml")
-        jpeg_file = os.path.join(dirname, "JPEGImages", fileid + ".jpg")
+        jpeg_file = os.path.join(dirname, fileid + ".jpg")
 
         tree = ET.parse(anno_file)
 
@@ -65,14 +65,15 @@ def load_protein_instances(dirname: str, split: str):
             # In coordinate space this is represented by (xmin=0, xmax=W)
             bbox[0] -= 1.0
             bbox[1] -= 1.0
-            instances.append(
-                {"category_id": CLASS_NAMES.index(cls), "bbox": bbox, "bbox_mode": BoxMode.XYXY_ABS}
-            )
+            instances.append({"category_id": CLASS_NAMES.index(cls)})
+            # instances.append(
+            #     {"category_id": CLASS_NAMES.index(cls), "bbox": bbox, "bbox_mode": BoxMode.XYXY_ABS}
+            # )
         r["annotations"] = instances
         dicts.append(r)
     return dicts
 
-
+#  ("protein_trainval", "train", "train"),
 def register_human_protein(name, dirname, split):
     DatasetCatalog.register(name, lambda: load_protein_instances(dirname, split))
     MetadataCatalog.get(name).set(

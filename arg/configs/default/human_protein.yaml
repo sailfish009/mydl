@@ -36,4 +36,4 @@ TEST:
   TTA: 'on'
 
 OUTPUT_DIR: "dump/res18_cv0"
-VERSION: 2
+VERSION: 1

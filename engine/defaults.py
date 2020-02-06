@@ -127,13 +127,14 @@ def default_setup(cfg, args):
             f.write(cfg.dump())
         logger.info("Full config saved to {}".format(os.path.abspath(path)))
 
-    # make sure each worker has a different, yet deterministic seed if specified
-    seed_all_rng(None if cfg.SEED < 0 else cfg.SEED + rank)
+    if cfg.VERSION == 2:
+        # make sure each worker has a different, yet deterministic seed if specified
+        seed_all_rng(None if cfg.SEED < 0 else cfg.SEED + rank)
 
-    # cudnn benchmark has large overhead. It shouldn't be used considering the small size of
-    # typical validation set.
-    if not (hasattr(args, "eval_only") and args.eval_only):
-        torch.backends.cudnn.benchmark = cfg.CUDNN_BENCHMARK
+        # cudnn benchmark has large overhead. It shouldn't be used considering the small size of
+        # typical validation set.
+        if not (hasattr(args, "eval_only") and args.eval_only):
+            torch.backends.cudnn.benchmark = cfg.CUDNN_BENCHMARK
 
 
 class DefaultPredictor:
