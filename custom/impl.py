@@ -6,7 +6,7 @@ from .. engine import default_argument_parser, default_setup, launch
 from .. utils.logger import setup_logger
 from .. utils.collect_env import collect_env_info
 from .. checkpoint import DetectionCheckpointer
-from . ml_stratifiers import MultilabelStratifiedShuffleSplit
+from .  protein.ml_stratifiers import MultilabelStratifiedShuffleSplit
 
 # See if we can use apex.DistributedDataParallel instead of the torch default,
 # and enable mixed-precision via apex.amp
