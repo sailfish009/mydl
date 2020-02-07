@@ -24,10 +24,19 @@ def build_backbone(cfg, input_shape=None):
     Returns:
         an instance of :class:`Backbone`
     """
-    if input_shape is None:
-        input_shape = ShapeSpec(channels=len(cfg.MODEL.PIXEL_MEAN))
 
-    backbone_name = cfg.MODEL.BACKBONE.NAME
-    backbone = BACKBONE_REGISTRY.get(backbone_name)(cfg, input_shape)
-    assert isinstance(backbone, Backbone)
-    return backbone
+    if cfg.VERSION == 1:
+
+        backbone_name = cfg.MODEL.BACKBONE.NAME
+        backbone = BACKBONE_REGISTRY.get(backbone_name)(cfg)
+        assert isinstance(backbone, Backbone)
+        return backbone
+
+    else:
+        if input_shape is None:
+            input_shape = ShapeSpec(channels=len(cfg.MODEL.PIXEL_MEAN))
+
+        backbone_name = cfg.MODEL.BACKBONE.NAME
+        backbone = BACKBONE_REGISTRY.get(backbone_name)(cfg, input_shape)
+        assert isinstance(backbone, Backbone)
+        return backbone

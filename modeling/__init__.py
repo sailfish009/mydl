@@ -17,6 +17,7 @@ from .backbone import (
 from .meta_arch import (
     META_ARCH_REGISTRY,
     SEM_SEG_HEADS_REGISTRY,
+    ProteinResnet,
     GeneralizedRCNN,
     PanopticFPN,
     ProposalNetwork,

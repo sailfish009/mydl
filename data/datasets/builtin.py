@@ -21,7 +21,6 @@ To add new dataset, refer to the tutorial "docs/DATASETS.md".
 import os
 
 from mydl.data import MetadataCatalog, DatasetCatalog
-from .human_protein import register_human_protein
 from .register_coco import register_coco_instances, register_coco_panoptic_separated
 from .lvis import register_lvis_instances, get_lvis_instances_meta
 from .cityscapes import load_cityscapes_instances, load_cityscapes_semantic
@@ -224,7 +223,7 @@ def register_all_human_protein(root="datasets"):
 
 
 # Register them all under "./datasets"
-register_all_human_protein()
+# register_all_human_protein()
 # register_all_coco()
 # register_all_lvis()
 # register_all_cityscapes()
