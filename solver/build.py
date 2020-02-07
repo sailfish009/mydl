@@ -36,7 +36,7 @@ def build_optimizer(cfg: CfgNode, model: torch.nn.Module) -> torch.optim.Optimiz
             memo.add(value)
             lr = cfg.SOLVER.BASE_LR
             weight_decay = cfg.SOLVER.WEIGHT_DECAY
-            if isinstance(module, norm_module_types):
+            if cfg.VERSION != 1 and isinstance(module, norm_module_types):
                 weight_decay = cfg.SOLVER.WEIGHT_DECAY_NORM
             elif key == "bias":
                 # NOTE: unlike Detectron v1, we now default BIAS_LR_FACTOR to 1.0
@@ -57,7 +57,13 @@ def build_lr_scheduler(
     """
     Build a LR scheduler from config.
     """
-    name = cfg.SOLVER.LR_SCHEDULER_NAME
+    name = None
+
+    if cfg.VERSION == 1:
+        name = cfg.SOLVER.SCHEDULER
+    else:
+        name = cfg.SOLVER.LR_SCHEDULER_NAME
+
     if name == "WarmupMultiStepLR":
         return WarmupMultiStepLR(
             optimizer,
