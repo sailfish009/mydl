@@ -6,6 +6,7 @@ from mydl.config import CfgNode
 
 from .lr_scheduler import WarmupCosineLR, WarmupMultiStepLR
 
+from pampy import match, _
 
 def build_optimizer(cfg: CfgNode, model: torch.nn.Module) -> torch.optim.Optimizer:
     """
@@ -64,22 +65,66 @@ def build_lr_scheduler(
     else:
         name = cfg.SOLVER.LR_SCHEDULER_NAME
 
-    if name == "WarmupMultiStepLR":
-        return WarmupMultiStepLR(
+    return match
+    (
+        name,
+        "WarmupMultiStepLR",  WarmupMultiStepLR( \
+            optimizer, \
+            cfg.SOLVER.STEPS, \
+            cfg.SOLVER.GAMMA, \
+            warmup_factor=cfg.SOLVER.WARMUP_FACTOR, \
+            warmup_iters=cfg.SOLVER.WARMUP_ITERS, \
+            warmup_method=cfg.SOLVER.WARMUP_METHOD, \
+        ),
+        "WarmupCosineLR", WarmupCosineLR( \
+            optimizer, \
+            cfg.SOLVER.MAX_ITER, \
+            warmup_factor=cfg.SOLVER.WARMUP_FACTOR, \
+            warmup_iters=cfg.SOLVER.WARMUP_ITERS, \
+            warmup_method=cfg.SOLVER.WARMUP_METHOD, \
+        ),
+        "ReduceLROnPlateau", ReduceLROnPlateau( \
+            optimizer, \
+            factor=cfg.SOLVER.GAMMA, \
+            patience=cfg.SOLVER.PATIENCE \
+        ),
+        "MultiStepLR", MultiStepLR( \
+            optimizer, \
+            milestones=cfg.SOLVER.STEPS, \
+            gamma=cfg.SOLVER.GAMMA \
+        ),
+        "StepLR", StepLR( \
+            optimizer, \
+            step_size=cfg.SOLVER.STEP_SIZE, \
+            gamma=cfg.SOLVER.GAMMA \
+        ),
+        "CosineAnnealingLR", CosineAnnealingLR(
             optimizer,
-            cfg.SOLVER.STEPS,
-            cfg.SOLVER.GAMMA,
-            warmup_factor=cfg.SOLVER.WARMUP_FACTOR,
-            warmup_iters=cfg.SOLVER.WARMUP_ITERS,
-            warmup_method=cfg.SOLVER.WARMUP_METHOD,
+            T_max=cfg.SOLVER.T_MAX,
+            eta_min=1e-5
         )
-    elif name == "WarmupCosineLR":
-        return WarmupCosineLR(
-            optimizer,
-            cfg.SOLVER.MAX_ITER,
-            warmup_factor=cfg.SOLVER.WARMUP_FACTOR,
-            warmup_iters=cfg.SOLVER.WARMUP_ITERS,
-            warmup_method=cfg.SOLVER.WARMUP_METHOD,
-        )
-    else:
-        raise ValueError("Unknown LR scheduler: {}".format(name))
+
+        # _, raise ValueError("Unknown LR scheduler: {}".format(name))
+    )
+
+    
+
+    # if name == "WarmupMultiStepLR":
+    #     return WarmupMultiStepLR(
+    #         optimizer,
+    #         cfg.SOLVER.STEPS,
+    #         cfg.SOLVER.GAMMA,
+    #         warmup_factor=cfg.SOLVER.WARMUP_FACTOR,
+    #         warmup_iters=cfg.SOLVER.WARMUP_ITERS,
+    #         warmup_method=cfg.SOLVER.WARMUP_METHOD,
+    #     )
+    # elif name == "WarmupCosineLR":
+    #     return WarmupCosineLR(
+    #         optimizer,
+    #         cfg.SOLVER.MAX_ITER,
+    #         warmup_factor=cfg.SOLVER.WARMUP_FACTOR,
+    #         warmup_iters=cfg.SOLVER.WARMUP_ITERS,
+    #         warmup_method=cfg.SOLVER.WARMUP_METHOD,
+    #     )
+    # else:
+    #     raise ValueError("Unknown LR scheduler: {}".format(name))
