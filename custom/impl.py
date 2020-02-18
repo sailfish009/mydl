@@ -7,6 +7,9 @@ from .. utils.logger import setup_logger
 from .. utils.collect_env import collect_env_info
 from .. checkpoint import DetectionCheckpointer
 from .  protein.ml_stratifiers import MultilabelStratifiedShuffleSplit
+from .. utils.comm import get_world_size
+from .. data.build import get_detection_dataset_dicts 
+from .  protein.data import make_data_loader
 
 # match for python!
 # from pampy import match, _
@@ -91,5 +94,32 @@ def run(main_func):
         args=(args,),
     )
 
+def build_detection_train_loader(cfg):
+    num_workers = get_world_size()
+    images_per_batch = cfg.SOLVER.IMS_PER_BATCH
+    assert (
+        images_per_batch % num_workers == 0
+    ), "SOLVER.IMS_PER_BATCH ({}) must be divisible by the number of workers ({}).".format(
+        images_per_batch, num_workers
+    )
+    assert (
+        images_per_batch >= num_workers
+    ), "SOLVER.IMS_PER_BATCH ({}) must be larger than the number of workers ({}).".format(
+        images_per_batch, num_workers
+    )
+    images_per_worker = images_per_batch // num_workers
+
+    # make data loader
+    train_data_loader = make_data_loader(
+        cfg,
+        cfg.DATASETS.TRAIN,
+        is_train=True
+    )
+    valid_data_loader = make_data_loader(
+        cfg,
+        cfg.DATASETS.VALID,
+        is_train=False
+    )
+    return train_data_loader, valid_data_loader
 
 

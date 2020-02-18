@@ -287,11 +287,19 @@ def build_detection_train_loader(cfg, mapper=None):
     )
     images_per_worker = images_per_batch // num_workers
 
+    # force the training of algorithm without remove image that have not annotations : False
+    annotation_filter_emtpy = True
+
+    if cfg.VERSION == 1:
+        annotation_filter_emtpy = False 
+    else:
+        annotation_filter_emtpy = cfg.DATALOADER.FILTER_EMPTY_ANNOTATIONS 
+
     dataset_dicts = get_detection_dataset_dicts(
         cfg.DATASETS.TRAIN,
-        filter_empty=cfg.DATALOADER.FILTER_EMPTY_ANNOTATIONS,
+        filter_empty=annotation_filter_emtpy,
         min_keypoints=cfg.MODEL.ROI_KEYPOINT_HEAD.MIN_KEYPOINTS_PER_IMAGE
-        if cfg.MODEL.KEYPOINT_ON
+        if cfg.VERSION != 1 and cfg.MODEL.KEYPOINT_ON
         else 0,
         proposal_files=cfg.DATASETS.PROPOSAL_FILES_TRAIN if cfg.MODEL.LOAD_PROPOSALS else None,
     )

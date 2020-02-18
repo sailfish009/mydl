@@ -7,10 +7,11 @@ from torch.utils.data import Dataset
 
 
 class ProteinDataset(Dataset):
-    def __init__(self, cfg, label_file, root_folder, transforms, is_train):
+    def __init__(self, cfg, label_file, root_folder, transforms, is_train, file_ext=".png"):
         df_train = pd.read_csv(label_file)
         self.ids = df_train["Id"].tolist()
         self.is_train = is_train
+        self.file_ext = file_ext
         if is_train:
             raw_labels = df_train['Target'].tolist()
             self.labels = [list(map(int, item.split(' '))) for item in raw_labels]
@@ -23,7 +24,7 @@ class ProteinDataset(Dataset):
             self.channels = 4
 
     def __getitem__(self, index):
-        img_names = [self.ids[index] + "_" + color + ".png" for color in ["red", "green", "blue", "yellow"]]
+        img_names = [self.ids[index] + "_" + color + self.file_ext for color in ["red", "green", "blue", "yellow"]]
         R = cv2.imread(os.path.join(self.root_folder, img_names[0]), cv2.IMREAD_GRAYSCALE)
         G = cv2.imread(os.path.join(self.root_folder, img_names[1]), cv2.IMREAD_GRAYSCALE)
         B = cv2.imread(os.path.join(self.root_folder, img_names[2]), cv2.IMREAD_GRAYSCALE)

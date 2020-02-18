@@ -5,6 +5,7 @@ import torch
 from mydl.config import CfgNode
 
 from .lr_scheduler import WarmupCosineLR, WarmupMultiStepLR
+from .. custom.protein.base import finetune_params
 
 from pampy import match, _
 
@@ -107,24 +108,22 @@ def build_lr_scheduler(
         # _, raise ValueError("Unknown LR scheduler: {}".format(name))
     )
 
+def build_finetune_optimizer(cfg, model):
+    params = []
+    for key, value in model.named_parameters():
+        if not value.requires_grad:
+            continue
+        lr = cfg.SOLVER.FINETUNE_LR
+        weight_decay = cfg.SOLVER.WEIGHT_DECAY
+        if "bias" in key:
+            lr = cfg.SOLVER.FINETUNE_LR * cfg.SOLVER.BIAS_LR_FACTOR
+            weight_decay = cfg.SOLVER.WEIGHT_DECAY_BIAS
+        for name in finetune_params[cfg.MODEL.NAME]:
+            if name in key:
+                params += [{"params": [value], "lr": lr, "weight_decay": weight_decay}]
+
+    optimizer = torch.optim.SGD(params, lr=0, momentum=cfg.SOLVER.MOMENTUM)
+    return optimizer
+
     
 
-    # if name == "WarmupMultiStepLR":
-    #     return WarmupMultiStepLR(
-    #         optimizer,
-    #         cfg.SOLVER.STEPS,
-    #         cfg.SOLVER.GAMMA,
-    #         warmup_factor=cfg.SOLVER.WARMUP_FACTOR,
-    #         warmup_iters=cfg.SOLVER.WARMUP_ITERS,
-    #         warmup_method=cfg.SOLVER.WARMUP_METHOD,
-    #     )
-    # elif name == "WarmupCosineLR":
-    #     return WarmupCosineLR(
-    #         optimizer,
-    #         cfg.SOLVER.MAX_ITER,
-    #         warmup_factor=cfg.SOLVER.WARMUP_FACTOR,
-    #         warmup_iters=cfg.SOLVER.WARMUP_ITERS,
-    #         warmup_method=cfg.SOLVER.WARMUP_METHOD,
-    #     )
-    # else:
-    #     raise ValueError("Unknown LR scheduler: {}".format(name))

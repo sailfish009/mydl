@@ -134,7 +134,7 @@ def calc_statistics(cfg, loader='train'):
     please close normalize in dataset's transform manually
     :return:
     """
-    from dl_backbone.data.build import make_data_loader
+    from .data import make_data_loader
     if loader == 'train':
         data_loader = make_data_loader(cfg, cfg.DATASETS.TRAIN, is_train=True)
     elif loader == 'valid':
