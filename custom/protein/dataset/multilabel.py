@@ -1,13 +1,14 @@
 import os
 import pandas as pd
 import cv2
+from PIL import Image 
 import numpy as np
 import torch
 from torch.utils.data import Dataset
 
 
 class ProteinDataset(Dataset):
-    def __init__(self, cfg, label_file, root_folder, transforms, is_train, file_ext=".png"):
+    def __init__(self, cfg, label_file, root_folder, transforms, is_train, file_ext=".jpg"):
         df_train = pd.read_csv(label_file)
         self.ids = df_train["Id"].tolist()
         self.is_train = is_train
@@ -25,14 +26,28 @@ class ProteinDataset(Dataset):
 
     def __getitem__(self, index):
         img_names = [self.ids[index] + "_" + color + self.file_ext for color in ["red", "green", "blue", "yellow"]]
-        R = cv2.imread(os.path.join(self.root_folder, img_names[0]), cv2.IMREAD_GRAYSCALE)
-        G = cv2.imread(os.path.join(self.root_folder, img_names[1]), cv2.IMREAD_GRAYSCALE)
-        B = cv2.imread(os.path.join(self.root_folder, img_names[2]), cv2.IMREAD_GRAYSCALE)
-        Y = cv2.imread(os.path.join(self.root_folder, img_names[3]), cv2.IMREAD_GRAYSCALE)
+        # R = cv2.imread(os.path.join(self.root_folder, img_names[0]), cv2.IMREAD_GRAYSCALE)
+        # G = cv2.imread(os.path.join(self.root_folder, img_names[1]), cv2.IMREAD_GRAYSCALE)
+        # B = cv2.imread(os.path.join(self.root_folder, img_names[2]), cv2.IMREAD_GRAYSCALE)
+        # Y = cv2.imread(os.path.join(self.root_folder, img_names[3]), cv2.IMREAD_GRAYSCALE)
+
+        R = np.array(Image.open(os.path.join(self.root_folder, img_names[0])))
+        G = np.array(Image.open(os.path.join(self.root_folder, img_names[1])))
+        B = np.array(Image.open(os.path.join(self.root_folder, img_names[2])))
+        Y = np.array(Image.open(os.path.join(self.root_folder, img_names[3])))
         try:
             if self.channels == 4:
-                img = np.stack([R, G, B, Y], axis=-1)
-                img = self.transforms(img)
+                images = np.zeros(shape=(512,512,4))
+                images[:,:,0] = R.astype(np.uint8) 
+                images[:,:,1] = G.astype(np.uint8)
+                images[:,:,2] = B.astype(np.uint8)
+                images[:,:,3] = Y.astype(np.uint8)
+                img = images.astype(np.uint8)
+
+                # orig
+                # # img = np.stack([R, G, B, Y], axis=-1)
+                # img = np.stack([R, G, B, Y], axis=2)
+                # img = self.transforms(img)
             elif self.channels == 3:
                 img = np.stack([R, G, B], axis=-1)
                 img = self.transforms(img)

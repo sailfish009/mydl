@@ -48,7 +48,7 @@ class ProteinDataset(Dataset):
                 label_vec[labels] = 1
             return img, label_vec, index
         except ValueError:
-            print("error on %s" % self.ids[index])
+            print("test error on %s" % self.ids[index])
 
     def __len__(self):
         return len(self.ids)
