@@ -38,7 +38,8 @@ def build_transforms(cfg, dataset_name, is_train=True):
         if cfg.DATALOADER.AUGMENT == 'normal':
             aug = flip_aug
         elif cfg.DATALOADER.AUGMENT == 'heavy':
-            aug = iaa.Sequential([flip_aug, crop_aug, iaa.Scale({"height": min_size, "width": max_size})])
+            aug = iaa.Sequential([flip_aug, crop_aug, iaa.Resize({"height": min_size, "width": max_size})])
+            # aug = iaa.Sequential([flip_aug, crop_aug, iaa.Scale({"height": min_size, "width": max_size})])
         elif cfg.DATALOADER.AUGMENT == 'extreme':
             aug = iaa.Sequential([flip_aug, crop_aug, blur_aug])
         else:

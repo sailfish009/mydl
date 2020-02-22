@@ -1,10 +1,10 @@
 import os
 import pandas as pd
 import cv2
-from PIL import Image 
 import numpy as np
 import torch
 from torch.utils.data import Dataset
+from torchvision.transforms import RandomCrop
 
 
 class ProteinDataset(Dataset):
@@ -24,30 +24,25 @@ class ProteinDataset(Dataset):
         else:
             self.channels = 4
 
+        self.width = cfg.INPUT.MAX_SIZE_TRAIN
+        self.height = cfg.INPUT.MAX_SIZE_TRAIN
+
     def __getitem__(self, index):
         img_names = [self.ids[index] + "_" + color + self.file_ext for color in ["red", "green", "blue", "yellow"]]
-        # R = cv2.imread(os.path.join(self.root_folder, img_names[0]), cv2.IMREAD_GRAYSCALE)
-        # G = cv2.imread(os.path.join(self.root_folder, img_names[1]), cv2.IMREAD_GRAYSCALE)
-        # B = cv2.imread(os.path.join(self.root_folder, img_names[2]), cv2.IMREAD_GRAYSCALE)
-        # Y = cv2.imread(os.path.join(self.root_folder, img_names[3]), cv2.IMREAD_GRAYSCALE)
+        R = cv2.imread(os.path.join(self.root_folder, img_names[0]), cv2.IMREAD_GRAYSCALE)
+        G = cv2.imread(os.path.join(self.root_folder, img_names[1]), cv2.IMREAD_GRAYSCALE)
+        B = cv2.imread(os.path.join(self.root_folder, img_names[2]), cv2.IMREAD_GRAYSCALE)
+        Y = cv2.imread(os.path.join(self.root_folder, img_names[3]), cv2.IMREAD_GRAYSCALE)
 
-        R = np.array(Image.open(os.path.join(self.root_folder, img_names[0])))
-        G = np.array(Image.open(os.path.join(self.root_folder, img_names[1])))
-        B = np.array(Image.open(os.path.join(self.root_folder, img_names[2])))
-        Y = np.array(Image.open(os.path.join(self.root_folder, img_names[3])))
         try:
             if self.channels == 4:
-                images = np.zeros(shape=(512,512,4))
-                images[:,:,0] = R.astype(np.uint8) 
-                images[:,:,1] = G.astype(np.uint8)
-                images[:,:,2] = B.astype(np.uint8)
-                images[:,:,3] = Y.astype(np.uint8)
-                img = images.astype(np.uint8)
-
-                # orig
-                # # img = np.stack([R, G, B, Y], axis=-1)
+                R = cv2.resize(R, (self.width, self.height), interpolation=cv2.INTER_CUBIC )
+                G = cv2.resize(G, (self.width, self.height), interpolation=cv2.INTER_CUBIC )
+                B = cv2.resize(B, (self.width, self.height), interpolation=cv2.INTER_CUBIC )
+                Y = cv2.resize(Y, (self.width, self.height), interpolation=cv2.INTER_CUBIC )
+                img = np.stack([R, G, B, Y], axis=-1)
                 # img = np.stack([R, G, B, Y], axis=2)
-                # img = self.transforms(img)
+                img = self.transforms(img)
             elif self.channels == 3:
                 img = np.stack([R, G, B], axis=-1)
                 img = self.transforms(img)
@@ -59,7 +54,8 @@ class ProteinDataset(Dataset):
                 labels = self.labels[index]
                 label_vec[labels] = 1
             return img, label_vec, index
-        except ValueError:
+        # except ValueError:
+        except:
             print("error on %s" % self.ids[index])
 
     def __len__(self):

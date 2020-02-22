@@ -53,7 +53,8 @@ _C.DATALOADER = CN()
 _C.DATALOADER.SAMPLER = "even" # even or weighted
 _C.DATALOADER.SAMPLER_WEIGHTS = "kaggle/sample_weights.pickle"
 # Number of data loading threads
-_C.DATALOADER.NUM_WORKERS = 8
+_C.DATALOADER.NUM_WORKERS = 1
+# _C.DATALOADER.NUM_WORKERS = 8
 _C.DATALOADER.AUGMENT = "normal"  # normal, heavy, extreme
 # If > 0, this enforces that each collated batch should have a size divisible
 # by SIZE_DIVISIBILITY
@@ -109,7 +110,8 @@ _C.SOLVER.MIXUP = 'off'
 # Number of images per batch
 # This is global, so if we have 8 GPUs and IMS_PER_BATCH = 16, each GPU will
 # see 2 images per batch
-_C.SOLVER.IMS_PER_BATCH = 32
+_C.SOLVER.IMS_PER_BATCH = 2
+# _C.SOLVER.IMS_PER_BATCH = 32
 
 # ---------------------------------------------------------------------------- #
 # Specific test options
