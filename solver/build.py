@@ -4,6 +4,7 @@ import torch
 
 from mydl.config import CfgNode
 
+from torch.optim.lr_scheduler import StepLR
 from .lr_scheduler import WarmupCosineLR, WarmupMultiStepLR
 from .. custom.protein.base import finetune_params
 
@@ -66,6 +67,10 @@ def build_lr_scheduler(
     else:
         name = cfg.SOLVER.LR_SCHEDULER_NAME
 
+    return StepLR( optimizer, step_size=cfg.SOLVER.STEP_SIZE, gamma=cfg.SOLVER.GAMMA)
+
+    """
+    # print('scheduler name: {}'.format(name))
     return match
     (
         name,
@@ -103,10 +108,12 @@ def build_lr_scheduler(
             optimizer,
             T_max=cfg.SOLVER.T_MAX,
             eta_min=1e-5
-        )
-
+        ),
+        # match bug exist
+        _, StepLR( optimizer, step_size=cfg.SOLVER.STEP_SIZE, gamma=cfg.SOLVER.GAMMA)
         # _, raise ValueError("Unknown LR scheduler: {}".format(name))
     )
+    """
 
 def build_finetune_optimizer(cfg, model):
     params = []
