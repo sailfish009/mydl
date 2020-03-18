@@ -64,20 +64,25 @@ def collect_env_info():
     data.append(("numpy", np.__version__))
 
     try:
-        import mydl
-        from mydl import _C
-    except ImportError:
-        data.append(("mydl._C", "failed to import"))
-    else:
+        import mydl  # noqa
+
         data.append(
             ("mydl", mydl.__version__ + " @" + os.path.dirname(mydl.__file__))
         )
-        data.append(("mydl compiler", _C.get_compiler_version()))
-        data.append(("mydl CUDA compiler", _C.get_cuda_version()))
-        if has_cuda:
-            data.append(
-                ("mydl arch flags", detect_compute_compatibility(CUDA_HOME, _C.__file__))
-            )
+    except ImportError:
+        data.append(("mydl", "failed to import"))
+    else:
+        try:
+            from mydl import _C
+        except ImportError:
+            data.append(("mydl._C", "failed to import"))
+        else:
+            data.append(("mydl compiler", _C.get_compiler_version()))
+            data.append(("mydl CUDA compiler", _C.get_cuda_version()))
+            if has_cuda:
+                data.append(
+                    ("mydl arch flags", detect_compute_compatibility(CUDA_HOME, _C.__file__))
+                )
 
     data.append(get_env_module())
     data.append(("PyTorch", torch.__version__ + " @" + os.path.dirname(torch.__file__)))
@@ -138,4 +143,11 @@ def collect_env_info():
 
 
 if __name__ == "__main__":
-    print(collect_env_info())
+    try:
+        import mydl  # noqa
+    except ImportError:
+        print(collect_env_info())
+    else:
+        from mydl.utils.collect_env import collect_env_info
+
+        print(collect_env_info())

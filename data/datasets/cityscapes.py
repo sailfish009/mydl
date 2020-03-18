@@ -8,12 +8,12 @@ import numpy as np
 import os
 from itertools import chain
 import pycocotools.mask as mask_util
+from fvcore.common.file_io import PathManager
 from PIL import Image
 
 from mydl.structures import BoxMode
-from mydl.utils.logger import setup_logger
 from mydl.utils.comm import get_world_size
-from fvcore.common.file_io import PathManager
+from mydl.utils.logger import setup_logger
 
 try:
     import cv2  # noqa

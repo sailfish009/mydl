@@ -12,6 +12,7 @@ since they are meant to represent the "common default behavior" people need in t
 import argparse
 import logging
 import os
+import sys
 from collections import OrderedDict
 import torch
 from fvcore.common.file_io import PathManager
@@ -345,7 +346,7 @@ class DefaultTrainer(SimpleTrainer):
 
         if comm.is_main_process():
             # run writers in the end, so that evaluation metrics are written
-            ret.append(hooks.PeriodicWriter(self.build_writers()))
+            ret.append(hooks.PeriodicWriter(self.build_writers(), period=20))
         return ret
 
     def build_writers(self):
@@ -370,7 +371,7 @@ class DefaultTrainer(SimpleTrainer):
             ]
 
         """
-        # Assume the default print/log frequency.
+        # Here the default print/log frequency of each writer is used.
         return [
             # It may not always print what you want to see, since it prints "common" metrics only.
             CommonMetricPrinter(self.max_iter),
@@ -452,13 +453,16 @@ class DefaultTrainer(SimpleTrainer):
     def build_evaluator(cls, cfg, dataset_name):
         """
         Returns:
-            DatasetEvaluator
+            DatasetEvaluator or None
 
         It is not implemented by default.
         """
         raise NotImplementedError(
-            "Please either implement `build_evaluator()` in subclasses, or pass "
-            "your evaluator as arguments to `DefaultTrainer.test()`."
+            """
+If you want DefaultTrainer to automatically run evaluation,
+please implement `build_evaluator()` in subclasses (see train_net.py for example).
+Alternatively, you can call evaluation functions yourself (see Colab balloon tutorial for example).
+"""
         )
 
     @classmethod

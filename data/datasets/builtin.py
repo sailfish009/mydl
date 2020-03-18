@@ -20,13 +20,13 @@ To add new dataset, refer to the tutorial "docs/DATASETS.md".
 
 import os
 
-from mydl.data import MetadataCatalog, DatasetCatalog
-from .register_coco import register_coco_instances, register_coco_panoptic_separated
-from .lvis import register_lvis_instances, get_lvis_instances_meta
-from .cityscapes import load_cityscapes_instances, load_cityscapes_semantic
-from .pascal_voc import register_pascal_voc
-from .builtin_meta import _get_builtin_metadata
+from mydl.data import DatasetCatalog, MetadataCatalog
 
+from .builtin_meta import _get_builtin_metadata
+from .cityscapes import load_cityscapes_instances, load_cityscapes_semantic
+from .lvis import get_lvis_instances_meta, register_lvis_instances
+from .pascal_voc import register_pascal_voc
+from .register_coco import register_coco_instances, register_coco_panoptic_separated
 
 # ==== Predefined datasets and splits for COCO ==========
 
@@ -140,7 +140,11 @@ _PREDEFINED_SPLITS_LVIS = {
         "lvis_v0.5_val": ("coco/val2017", "lvis/lvis_v0.5_val.json"),
         "lvis_v0.5_val_rand_100": ("coco/val2017", "lvis/lvis_v0.5_val_rand_100.json"),
         "lvis_v0.5_test": ("coco/test2017", "lvis/lvis_v0.5_image_info_test.json"),
-    }
+    },
+    "lvis_v0.5_cocofied": {
+        "lvis_v0.5_train_cocofied": ("coco/train2017", "lvis/lvis_v0.5_train_cocofied.json"),
+        "lvis_v0.5_val_cocofied": ("coco/val2017", "lvis/lvis_v0.5_val_cocofied.json"),
+    },
 }
 
 
